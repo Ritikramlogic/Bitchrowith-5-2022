@@ -6,7 +6,7 @@ import Web3 from "web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Button, Modal } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import "./index.css";
 import { ContractABI, ContractAddress, BUSDABI, BUSDaddress } from "./config";
 let connector = "";
 let connectedAccount;
@@ -591,15 +591,12 @@ class App extends React.Component {
   //Approve Function
   async Approve() {
     let ammount = this.state.from * 10 ** 18;
-    console.log("====================================");
-    console.log(this.state.contract.methods);
-    console.log("====================================");
     let approve = await this.state.contract.methods.approve(
       ContractAddress,
       Web3.utils.toBN(ammount)
     );
     approve
-      .send({ from: this.state.address })
+      .send({ from: this.state.address, gasPrice: 131662 })
       .then((d) => {
         this.setState({ disable: d.status, approve: d.status });
       })
@@ -650,7 +647,7 @@ class App extends React.Component {
     );
   }
   //BuyNow Function
-  BuyNow() {
+  async BuyNow() {
     this.setState({
       from: 0,
       to: 0,
@@ -662,19 +659,42 @@ class App extends React.Component {
     this.ChangeForm(0);
     let str = this.state.from * 10 ** 18;
     console.log(str.toString());
-    console.log(str[0]);
-    window.Contract.privateSell(
-      this.state.address,
-      ethers.BigNumber.from(str.toString())
-    )
-      .then((d) => this.setState({ TransactionHash: d.hash }))
-      .catch((error) => {
-        if (error.code === -32603) {
-          alert("User Already Exists");
-        } else {
-          console.log(error);
-        }
-      });
+
+    if (window.Contract === undefined) {
+      await window.WalletConnect.methods
+        .privateSell(this.state.address, new Web3().utils.toBN(str))
+        .send({ from: this.state.address });
+      // .then((d) => this.setState({ TransactionHash: d.hash }))
+      // .catch((error) => {
+      //   if (error.code === -32603) {
+      //     alert("User Already Exists");
+      //   } else {
+      //     console.log(error);
+      //   }
+      // });
+
+      // .then((d) => this.setState({ TransactionHash: d.hash }))
+      // .catch((error) => {
+      //   if (error.code === -32603) {
+      //     alert("User Already Exists");
+      //   } else {
+      //     console.log(error);
+      //   }
+      // });
+    } else {
+      window.Contract.privateSell(
+        this.state.address,
+        ethers.BigNumber.from(str.toString())
+      )
+        .then((d) => this.setState({ TransactionHash: d.hash }))
+        .catch((error) => {
+          if (error.code === -32603) {
+            alert("User Already Exists");
+          } else {
+            console.log(error);
+          }
+        });
+    }
   }
 
   componentDidMount() {
@@ -871,6 +891,7 @@ class App extends React.Component {
       return;
     }
     const connectWalletMetamask = async (provider) => {
+      localStorage.removeItem("bitchro");
       if (provider) {
         let web3 = new Web3(provider);
         let chainId = await web3.eth.net.getId();
@@ -903,6 +924,13 @@ class App extends React.Component {
               10 ** 18,
           });
 
+          window.WalletConnect = new web3.eth.Contract(
+            ContractABI,
+            ContractAddress
+          );
+          console.log("====================================");
+          console.log(window.WalletConnect);
+          console.log("====================================");
           // console.log("====================================");
           // alert(this.state.balance);
           // console.log("====================================");
@@ -1199,7 +1227,7 @@ class App extends React.Component {
                   ? null
                   : () => {
                       console.log(this.state.from);
-                      if (this.state.from <= 0.01) {
+                      if (this.state.from <= 0.001) {
                         alert("Invested Amount Should be Minimum 1000 BUSD");
                         this.setState({ from: 0 });
                         this.setState({ to: 0 });
@@ -1256,23 +1284,84 @@ class App extends React.Component {
 
 function MyVerticallyCenteredModal(props) {
   return (
-    <Modal
-      show={props.showModal}
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-      onHide={props.DisconnectModal}
-    >
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Modal heading
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <button onClick={props.MetamaskWalletConnect}>MetaMask</button>
-        <button onClick={props.WalletConnect}>Wallet Connect</button>
-      </Modal.Body>
-    </Modal>
+    <div className="gdjhfgfjh">
+      <Modal
+        show={props.showModal}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        // dialogClassName="modal-50w"
+        size="sm"
+        onHide={props.DisconnectModal}
+      >
+        <Modal.Header
+          closeButton
+          style={{
+            background: "linear-gradient(120deg, #cb01ff 0%, #00ff57 100%)",
+            color: "#fff",
+          }}
+        >
+          <Modal.Title id="contained-modal-title-vcenter">
+            Connect Wallet
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ display: "flex", flexDirection: "column" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              borderRadius: "999px",
+              border: "1px solid black ",
+              padding: "10px 5px",
+            }}
+            onClick={props.MetamaskWalletConnect}
+          >
+            <button
+              style={{
+                outline: "none",
+                background: "transparent",
+                border: "none",
+              }}
+            >
+              MetaMask
+            </button>
+            <img
+              src={
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/512px-MetaMask_Fox.svg.png"
+              }
+              width="32px"
+            />
+          </div>
+          <br></br>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              borderRadius: "999px",
+              border: "1px solid black ",
+              padding: "10px 5px",
+            }}
+            onClick={props.WalletConnect}
+          >
+            <button
+              style={{
+                outline: "none",
+                background: "transparent",
+                border: "none",
+              }}
+            >
+              Wallet Connect
+            </button>
+            <img
+              src={
+                "https://bcmhunt.com/static/media/wallet-connect.dcbdafe7.ico"
+              }
+              width={"32px"}
+            />
+          </div>
+        </Modal.Body>
+      </Modal>
+    </div>
   );
 }
 export default App;
