@@ -45,7 +45,26 @@ export default class Airdrop extends React.Component {
     this.setState({ showModal: false, connect: true });
   }
   async ClaimReward() {
-    alert("work");
+    // alert("work");
+
+    if (
+      !(
+        this.state.tFollow &&
+        this.state.tTweet &&
+        this.state.telegram &&
+        this.state.fShare &&
+        this.state.fLike &&
+        this.state.tTweetCounter &&
+        this.state.telegramCounter &&
+        this.state.TFollowCounter &&
+        this.state.fLikeCounter &&
+        this.state.fShareCOUNTER
+      )
+    ) {
+      alert("Please Complete Above Tasks ");
+    } else {
+      alert("All tasks are done");
+    }
     if (window.ethereum !== undefined && this.state.isWalletConnect === false) {
       alert("PC ");
       if (this.state.contract !== null) {
@@ -90,7 +109,7 @@ export default class Airdrop extends React.Component {
           alert("PC: Please do above tasks");
         }
       } else {
-        alert("PC: Copntract Null");
+        // alert("PC: Copntract Null");
       }
     } else if (
       window.ethereum !== undefined &&
