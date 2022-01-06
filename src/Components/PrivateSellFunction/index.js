@@ -6,7 +6,6 @@ import Web3 from "web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Button, Modal } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./index.css";
 import { ContractABI, ContractAddress, BUSDABI, BUSDaddress } from "./config";
 let connector = "";
 let connectedAccount;
