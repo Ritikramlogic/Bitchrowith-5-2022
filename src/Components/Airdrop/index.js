@@ -63,10 +63,10 @@ export default class Airdrop extends React.Component {
     ) {
       alert("Please Complete Above Tasks ");
     } else {
-      alert("All tasks are done");
+      //       alert("All tasks are done");
     }
     if (window.ethereum !== undefined && this.state.isWalletConnect === false) {
-      alert("PC ");
+      //       alert("PC ");
       if (this.state.contract !== null) {
         if (
           this.state.tFollow &&
@@ -106,7 +106,7 @@ export default class Airdrop extends React.Component {
               }
             });
         } else {
-          alert("PC: Please do above tasks");
+          //           alert("Please complete above tasks");
         }
       } else {
         // alert("PC: Copntract Null");
@@ -115,7 +115,7 @@ export default class Airdrop extends React.Component {
       window.ethereum !== undefined &&
       this.state.isWalletConnect === true
     ) {
-      alert("PC Mobile  ");
+      //       alert("PC Mobile  ");
 
       if (
         this.state.tFollow &&
@@ -135,13 +135,13 @@ export default class Airdrop extends React.Component {
           .then((d) => console.log(d))
           .catch((e) => console.log(e));
       } else {
-        alert("PC and Mobile: Please do above tasks");
+        //         alert("Please do above tasks");
       }
     } else if (
       window.ethereum === undefined &&
       this.state.isWalletConnect === true
     ) {
-      alert("Mobile  ");
+      //       alert("Mobile  ");
       if (
         this.state.tFollow &&
         this.state.tTweet &&
@@ -160,7 +160,7 @@ export default class Airdrop extends React.Component {
           .then((d) => console.log(d))
           .catch((e) => console.log(e));
       } else {
-        alert("Mobile: Please do above tasks");
+        //         alert("Please do above tasks");
       }
     }
 
@@ -374,7 +374,7 @@ export default class Airdrop extends React.Component {
         bridge: "https://bridge.walletconnect.org",
         qrcode: true,
         qrcodeModalOptions: {
-          mobileLinks: ["metamask"],
+          mobileLinks: ["metamask", "trust"],
         },
       });
 
@@ -408,7 +408,7 @@ export default class Airdrop extends React.Component {
         console.log(connectedAccount);
 
         if (chainId == 56) {
-          alert("BNB");
+          //           alert("BNB");
 
           window.AirDropContract = new web3.eth.Contract(ABI, ContactAddress);
           console.log(window.AirDropContract);
